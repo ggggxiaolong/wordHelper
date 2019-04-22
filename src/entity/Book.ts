@@ -1,12 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
+import { Chapter } from "./Chapter";
 
-@Entity()
+@Entity({name:'book'})
 export class Book{
-    @PrimaryGeneratedColumn()
+    @PrimaryGeneratedColumn({name: "id"})
     id: number
-
-    @Column()
-    book_id: number
 
     @Column()
     name: String
@@ -22,4 +20,7 @@ export class Book{
 
     @Column()
     desc: String
+
+    @OneToMany(type => Chapter, chapter => chapter.book)
+    chapters: Chapter[];
 }

@@ -1,19 +1,23 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, ManyToMany, JoinTable } from "typeorm";
+import { Book } from "./Book";
+import { Word } from "./Word";
 
 @Entity()
 export class Chapter{
-    @PrimaryGeneratedColumn()
+    @PrimaryGeneratedColumn({name: "id"})
     id: number
-
-    @Column()
-    chapter_id: number
 
     @Column()
     name: String
 
-    @Column()
-    word_count: number
+    @Column({name: "wordCount"})
+    wordCount: number
 
-    @Column()
-    book_id: number
+    @ManyToOne(type => Book, book => book.chapters)
+    @JoinColumn({name: "bookId"})
+    book: Book
+
+    @ManyToMany(type => Word)
+    @JoinTable({name:"chapter_word", joinColumn:{name: "chapterId"}, inverseJoinColumn:{name: "wordId"}})
+    words: Word[]
 }
