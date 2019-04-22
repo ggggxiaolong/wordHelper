@@ -1,0 +1,20 @@
+{
+   "name": "wordHelper",
+   "version": "0.0.1",
+   "description": "Awesome project developed with TypeORM.",
+   "devDependencies": {
+      "@types/node": "^8.0.29",
+      "ts-node": "3.3.0",
+      "typescript": "2.5.2"
+   },
+   "dependencies": {
+      "apollo-server": "^2.4.8",
+      "graphql": "^14.2.1",
+      "reflect-metadata": "^0.1.10",
+      "sqlite3": "^4.0.3",
+      "typeorm": "0.2.15"
+   },
+   "scripts": {
+      "start": "ts-node src/index.ts"
+   }
+}
