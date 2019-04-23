@@ -12,7 +12,7 @@ export class Word{
     audio: String
 
     @Column()
-    pronumciation: String
+    pronunciation: String
 
     @Column()
     definition: String

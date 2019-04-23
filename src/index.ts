@@ -1,6 +1,7 @@
 import "reflect-metadata";
 import {createConnection} from "typeorm";
 import { Book } from "./entity/Book";
+import {jsonwebtoken} from "jsonwebtoken"
 
 createConnection().then(async connection => {
 
