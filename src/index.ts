@@ -1,16 +1,32 @@
 import "reflect-metadata";
-import {createConnection} from "typeorm";
-import {jsonwebtoken} from "jsonwebtoken"
-import { ApolloServer, Request } from "apollo-server";
+import {createConnection, getRepository} from "typeorm";
+import * as jwt from "jsonwebtoken"
+import { ApolloServer } from "apollo-server";
 import { typeDef } from "./schema";
 import { resolver } from "./resolvers";
+import * as depthLimit from "graphql-depth-limit" 
+import { from } from "apollo-link";
+import { User } from "./entity/User";
 
 const server = new ApolloServer({
     typeDefs: typeDef,
     resolvers: resolver,
-    context: ({req}) =>{
+    context: async({req}) =>{
         console.log(req.body.operationName)
+        console.log(req.body)
+        const token = req.headers.token
+        if(token){
+            try{
+                const userId = jwt.verify(token, "secret").data
+                const user:User = await getRepository(User).findOne({where:{id:userId}})
+                console.log(user.username)
+                return {user}
+            } catch(e){
+                console.log(`error token ${token}`)
+            }
+        }
     },
+    validationRules:[depthLimit(5)],// 最多递归调用层数
 })
 
 createConnection().then(async connection => {

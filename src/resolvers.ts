@@ -3,7 +3,8 @@ import { Book } from "./entity/Book";
 import { Chapter } from "./entity/Chapter";
 import { Word } from "./entity/Word";
 import { User } from "./entity/User";
-import {jsonwebtoken} from "jsonwebtoken"
+import * as jwt from "jsonwebtoken"
+import * as bcrypt from 'bcryptjs'
 
 export const resolver = {
     Query: {
@@ -14,11 +15,13 @@ export const resolver = {
         },
         login: async(_, {username, password}, __, ___) => {
             const userRepository = getRepository(User)
-            const user = await userRepository.find({where:{username: username, password: password}})
-            if(user){
-
+            const user:User = await userRepository.findOne({where:{username: username}})
+            if(user && bcrypt.compareSync(password, user.password)){
+                return jwt.sign({
+                    data:user.id
+                }, 'secret', { expiresIn: 60*10 })
             } else {
-
+                return "error"
             }
         },
         chapters: async(_, {bookId}, __, ___) => {
