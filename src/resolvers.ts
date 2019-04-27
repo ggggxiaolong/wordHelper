@@ -5,7 +5,7 @@ import { Word } from "./entity/Word";
 import { User } from "./entity/User";
 import {jsonwebtoken} from "jsonwebtoken"
 
-export const resoler = {
+export const resolver = {
     Query: {
         books: async(_, __,  ___) => {
             const bookRepository = getRepository(Book)
@@ -14,12 +14,18 @@ export const resoler = {
         },
         login: async(_, {username, password}, __, ___) => {
             const userRepository = getRepository(User)
-            const user = userRepository.find({where:{username: username, password: password}})
+            const user = await userRepository.find({where:{username: username, password: password}})
             if(user){
 
             } else {
 
             }
+        },
+        chapters: async(_, {bookId}, __, ___) => {
+            const chapterRepository = getRepository(Chapter)
+            const book = new Book()
+            book.id = bookId
+            return await chapterRepository.find({where:{book:book}})
         }
     },
     Book: {
@@ -30,10 +36,8 @@ export const resoler = {
     },
     Chapter: {
         words: async(chapter: Chapter, _, __, ___) => {
-                return await createQueryBuilder("chapter_word")
-                    .select("word")
-                    .innerJoinAndSelect(Word, "word", "chapter_word.chapterId = :chapterId", {chapterId: chapter.id})
-                .getMany()
+            const result:Chapter = await getRepository(Chapter).findOne({relations: ["words"], where: {id: chapter.id}})
+            return result.words
         }
     }
 }

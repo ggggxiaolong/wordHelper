@@ -1,10 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, ManyToMany, JoinTable } from "typeorm";
+import { Entity, Column, ManyToOne, JoinColumn, ManyToMany, JoinTable, PrimaryColumn } from "typeorm";
 import { Book } from "./Book";
 import { Word } from "./Word";
 
 @Entity()
 export class Chapter{
-    @PrimaryGeneratedColumn({name: "id"})
+    @PrimaryColumn({name: "id"})
     id: number
 
     @Column()
@@ -18,6 +18,6 @@ export class Chapter{
     book: Book
 
     @ManyToMany(type => Word)
-    @JoinTable({name:"chapter_word", joinColumn:{name: "chapterId"}, inverseJoinColumn:{name: "wordId"}})
+    @JoinTable({name:"chapter_word"})
     words: Word[]
 }

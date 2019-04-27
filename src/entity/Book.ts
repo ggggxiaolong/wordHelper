@@ -1,9 +1,9 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
+import { Entity, Column, OneToMany, PrimaryColumn } from "typeorm";
 import { Chapter } from "./Chapter";
 
 @Entity({name:'book'})
 export class Book{
-    @PrimaryGeneratedColumn({name: "id"})
+    @PrimaryColumn({name: "id"})
     id: number
 
     @Column()

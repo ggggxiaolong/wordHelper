@@ -1,12 +1,9 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, PrimaryColumn } from "typeorm";
 
 @Entity({name:'word'})
 export class Word{
-    @PrimaryGeneratedColumn()
+    @PrimaryColumn()
     id: number
-
-    @Column()
-    content_id: number
 
     @Column()
     audio: String

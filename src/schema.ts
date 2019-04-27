@@ -9,14 +9,14 @@ type Book {
     wordCounr: Int
     shortDesc: String
     desc: String
-    chapters: [!Chapter]
+    chapters: [Chapter!]
 }
 
 type Chapter{
     id: ID
     name: String
     wordCount: Int
-    words: [!Word]
+    words: [Word!]
 }
 
 type Word {
@@ -25,7 +25,6 @@ type Word {
     audio: String
     pronunciation: String
     definition: String
-    content: String
 }
 
 type User {
@@ -35,10 +34,10 @@ type User {
     mail: String
 }
 
-type query{
-    books: [!Book]
-    chapters(bookId: ID): [!Chapter]
-    words(chapterId: ID): [!Word]
+type Query{
+    books: [Book!]
+    chapters(bookId: ID): [Chapter!]
+    words(chapterId: ID): [Word!]
     login(username: String!, password: String!): String!
 }
 
