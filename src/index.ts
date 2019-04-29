@@ -5,8 +5,9 @@ import { ApolloServer } from "apollo-server";
 import { typeDef } from "./schema";
 import { resolver } from "./resolvers";
 import * as depthLimit from "graphql-depth-limit" 
-import { from } from "apollo-link";
 import { User } from "./entity/User";
+import { AuthDirective } from "./control/AuthDirective";
+
 
 const server = new ApolloServer({
     typeDefs: typeDef,
@@ -27,6 +28,9 @@ const server = new ApolloServer({
         }
     },
     validationRules:[depthLimit(5)],// 最多递归调用层数
+    schemaDirectives: {
+        auth: AuthDirective,
+    }
 })
 
 createConnection().then(async connection => {

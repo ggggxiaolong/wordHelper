@@ -1,9 +1,9 @@
-import { SchemaDirectiveVisitor, GraphQLArgument } from "graphql-tools";
+import { SchemaDirectiveVisitor } from "graphql-tools";
 import { AuthenticationError} from 'apollo-server'
-import {GraphQLField} from 'graphql'
+import {GraphQLField, GraphQLSchema, GraphQLDirective, DirectiveLocation} from "graphql"
 
-class AuthDirective extends SchemaDirectiveVisitor{
-    visitArgumentDefinition(field: GraphQLArgument){
+export class AuthDirective extends SchemaDirectiveVisitor{
+    visitFieldDefinition(field: GraphQLField<any, any>){
         field.resolve = async (result, args, context, info) => {
             if(!context.user){
                 return result[field.name]
@@ -11,5 +11,11 @@ class AuthDirective extends SchemaDirectiveVisitor{
                 throw new AuthenticationError("you must login")
             }
         }
+    }
+    static getDirectiveDeclaration(directiveName: string, schema: GraphQLSchema){
+        return new GraphQLDirective({
+            name: "auth",
+            locations: [DirectiveLocation.FIELD_DEFINITION, DirectiveLocation.OBJECT]
+        })
     }
 }
