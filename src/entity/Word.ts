@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column, PrimaryColumn } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, PrimaryColumn, ManyToMany, JoinTable } from "typeorm";
+import { Chapter } from "./Chapter";
 
 @Entity({name:'word'})
 export class Word{
@@ -16,4 +17,8 @@ export class Word{
 
     @Column()
     content: String
+
+    @ManyToMany(type => Chapter)
+    @JoinTable({name:"chapter_word"})
+    chapters: Chapter[]
 }

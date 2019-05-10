@@ -1,7 +1,7 @@
 import { gql } from 'apollo-server';
 
 export const typeDef = gql`
-
+directive @auth on OBJECT | FIELD_DEFINITION
 type Book {
     id: ID!
     name: String
@@ -35,9 +35,9 @@ type User {
 }
 
 type Query{
-    books: [Book!]
-    chapters(bookId: ID): [Chapter!]
-    words(chapterId: ID): [Word!]
+    books(pageSize: Int, page: Int): [Book!] @auth
+    chapters(bookId: ID): [Chapter!] @auth
+    words(chapterId: ID, pageSize: Int, page: Int): [Word!] @auth
     login(username: String!, password: String!): String!
 }
 

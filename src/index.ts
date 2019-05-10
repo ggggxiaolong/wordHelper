@@ -13,14 +13,14 @@ const server = new ApolloServer({
     typeDefs: typeDef,
     resolvers: resolver,
     context: async({req}) =>{
-        console.log(req.body.operationName)
-        console.log(req.body)
+        // console.log(req.body.operationName)
+        // console.log(req.body)
         const token = req.headers.token
         if(token){
             try{
                 const userId = jwt.verify(token, "secret").data
                 const user:User = await getRepository(User).findOne({where:{id:userId}})
-                console.log(user.username)
+                // console.log(user.username)
                 return {user}
             } catch(e){
                 console.log(`error token ${token}`)
