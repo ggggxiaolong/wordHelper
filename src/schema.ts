@@ -33,12 +33,17 @@ type User {
     nickname: String
     mail: String
 }
+type Token{
+    accessToken: String!
+    refreshToken: String!
+}
 
 type Query{
     books(pageSize: Int, page: Int): [Book!] @auth
     chapters(bookId: ID): [Chapter!] @auth
     words(chapterId: ID, pageSize: Int, page: Int): [Word!] @auth
-    login(username: String!, password: String!): String!
+    login(username: String!, password: String!): Token!
+    refreshToken(token: String): Token!
 }
 
 input AddUser{

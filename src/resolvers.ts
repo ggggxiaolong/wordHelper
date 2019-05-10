@@ -5,6 +5,9 @@ import { Word } from "./entity/Word";
 import { User } from "./entity/User";
 import * as jwt from "jsonwebtoken"
 import * as bcrypt from 'bcryptjs'
+import { AuthenticationError } from "apollo-server";
+import { Token } from "./entity/Token";
+import { JWTData } from "./entity/JWTData";
 
 export const resolver = {
     Query: {
@@ -17,11 +20,27 @@ export const resolver = {
             const userRepository = getRepository(User)
             const user: User = await userRepository.findOne({ where: { username: username } })
             if (user && bcrypt.compareSync(password, user.password)) {
-                return jwt.sign({
-                    data: user.id
-                }, 'secret', { expiresIn: 60 * 60 })
+                user.password = ''
+                const refreshToken = jwt.sign({user: user, isRefresh: true}, 'secret',{ expiresIn: 60 * 60 * 24 * 7})
+                const accessToken = jwt.sign({user: user, isRefresh: false}, 'secret',{ expiresIn: 60 * 60})
+                const token = new Token(accessToken, refreshToken)
+                return token
             } else {
-                return "error"
+                throw new AuthenticationError("error username or password")
+            }
+        },
+        refreshToken: async(_,{token}, __, ___) => {
+            try{
+                const data = <JWTData>jwt.verify(token, "secret",{ignoreExpiration: true})
+                if(data.isRefresh){
+                    const refreshToken = jwt.sign({user: data.user, isRefresh: true}, 'secret',{ expiresIn: 60 * 60 * 24 * 7})
+                    const accessToken = jwt.sign({user: data.user, isRefresh: false}, 'secret',{ expiresIn: 60 * 60})
+                    return new Token(accessToken, refreshToken)
+                } else {
+                    throw new AuthenticationError("error refres token")
+                }
+            } catch(e){
+                return new AuthenticationError("refres token fail")
             }
         },
         chapters: async (_, { bookId, pageSize = 20, page = 0 }, __, ___) => {

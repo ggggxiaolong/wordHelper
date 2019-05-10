@@ -4,6 +4,7 @@
    "description": "Awesome project developed with TypeORM.",
    "devDependencies": {
       "@types/graphql": "^14.2.0",
+      "@types/jsonwebtoken": "^8.3.2",
       "@types/node": "^8.0.29"
    },
    "dependencies": {

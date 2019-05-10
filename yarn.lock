@@ -123,6 +123,13 @@
   resolved "https://registry.npm.taobao.org/@types/graphql/download/@types/graphql-14.2.0.tgz#74e1da5f2a4a744ac6eb3ed57b48242ea9367202"
   integrity sha1-dOHaXypKdErG6z7Ve0gkLqk2cgI=
 
+"@types/jsonwebtoken@^8.3.2":
+  version "8.3.2"
+  resolved "https://registry.npm.taobao.org/@types/jsonwebtoken/download/@types/jsonwebtoken-8.3.2.tgz#e3d5245197152346fae7ee87d5541aa5a92d0362"
+  integrity sha1-49UkUZcVI0b65+6H1VQapaktA2I=
+  dependencies:
+    "@types/node" "*"
+
 "@types/long@^4.0.0":
   version "4.0.0"
   resolved "https://registry.npm.taobao.org/@types/long/download/@types/long-4.0.0.tgz#719551d2352d301ac8b81db732acb6bdc28dbdef"
@@ -1506,10 +1513,10 @@ graphql-upload@^8.0.2:
     http-errors "^1.7.2"
     object-path "^0.11.4"
 
-graphql@14.0.0:
-  version "14.0.0"
-  resolved "https://registry.npm.taobao.org/graphql/download/graphql-14.0.0.tgz#4ee771c5266d08cb75df2d3ac41e8dd51ce3d599"
-  integrity sha1-TudxxSZtCMt13y06xB6N1Rzj1Zk=
+graphql@^14.2.1:
+  version "14.3.0"
+  resolved "https://registry.npm.taobao.org/graphql/download/graphql-14.3.0.tgz#34dd36faa489ff642bcd25df6c3b4f988a1a2f3e"
+  integrity sha1-NN02+qSJ/2QrzSXfbDtPmIoaLz4=
   dependencies:
     iterall "^1.2.2"
 

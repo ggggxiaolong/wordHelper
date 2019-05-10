@@ -7,6 +7,7 @@ import { resolver } from "./resolvers";
 import * as depthLimit from "graphql-depth-limit" 
 import { User } from "./entity/User";
 import { AuthDirective } from "./control/AuthDirective";
+import { JWTData } from "./entity/JWTData";
 
 
 const server = new ApolloServer({
@@ -18,10 +19,10 @@ const server = new ApolloServer({
         const token = req.headers.token
         if(token){
             try{
-                const userId = jwt.verify(token, "secret").data
-                const user:User = await getRepository(User).findOne({where:{id:userId}})
-                // console.log(user.username)
-                return {user}
+                const data = <JWTData>jwt.verify(token, "secret")
+                if(!data.isRefresh){
+                    return {user: data.user}
+                }
             } catch(e){
                 console.log(`error token ${token}`)
             }
