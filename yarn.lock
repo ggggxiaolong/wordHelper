@@ -2755,6 +2755,11 @@ pstree.remy@^1.1.6:
   resolved "https://registry.npm.taobao.org/pstree.remy/download/pstree.remy-1.1.6.tgz#73a55aad9e2d95814927131fbf4dc1b62d259f47"
   integrity sha1-c6VarZ4tlYFJJxMfv03Bti0ln0c=
 
+pubsub-js@^1.7.0:
+  version "1.7.0"
+  resolved "https://registry.npm.taobao.org/pubsub-js/download/pubsub-js-1.7.0.tgz#eca97f9a4217bef62b2d3aaa1552005260cc2e49"
+  integrity sha1-7Kl/mkIXvvYrLTqqFVIAUmDMLkk=
+
 pump@^3.0.0:
   version "3.0.0"
   resolved "https://registry.npm.taobao.org/pump/download/pump-3.0.0.tgz#b4a2116815bde2f4e1ea602354e8c75565107a64"

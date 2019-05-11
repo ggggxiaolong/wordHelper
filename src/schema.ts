@@ -37,6 +37,15 @@ type Token{
     accessToken: String!
     refreshToken: String!
 }
+type Plan{
+    bookId: Int!
+    bookName: String!
+    bookWordCount: Int!
+    learnedCountBeforToday: Int!
+    dailyWord: Int!
+    todayWords: [Word]!
+    remainDays: Int!
+}
 
 type Query{
     books(pageSize: Int, page: Int): [Book!] @auth
@@ -56,5 +65,11 @@ input AddUser{
 
 type Mutation {
     register(user: AddUser): User
+    addPlan(bookId: Int!, dailyWord: Int!): Plan! @auth
+    addLearn(bookId: Int!, wordId: Int!): String @auth
+}
+
+type Subscription {
+    todayLeanedWords(userId: ID): [Word]!
 }
 `

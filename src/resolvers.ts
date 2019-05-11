@@ -1,4 +1,4 @@
-import { getRepository, createQueryBuilder, getConnection, EntityManager } from "typeorm";
+import { getRepository, createQueryBuilder, getConnection, EntityManager, MoreThan } from "typeorm";
 import { Book } from "./entity/Book";
 import { Chapter } from "./entity/Chapter";
 import { Word } from "./entity/Word";
@@ -8,6 +8,9 @@ import * as bcrypt from 'bcryptjs'
 import { AuthenticationError } from "apollo-server";
 import { Token } from "./entity/Token";
 import { JWTData } from "./entity/JWTData";
+import { Plan } from "./entity/Plan";
+import { UserPlan } from "./entity/UserPlan";
+import { Learn } from "./entity/Learn";
 
 export const resolver = {
     Query: {
@@ -58,6 +61,43 @@ export const resolver = {
                 [chapterId, pageSize, page]
             )
             return words
+        }
+    },
+    Mutation: {
+        addPlan: async(parent , {bookId, dailWord}, {user}:{ user: User}, info) => {
+            const planRepo = getRepository(Plan)
+            const plan = new Plan()
+            plan.bookId = bookId
+            plan.dailyWord = dailWord
+            plan.userId = user.id
+            plan.wordId = 0
+            await planRepo.save(plan)
+            const userPlan = new UserPlan()
+            userPlan.bookId = bookId
+            const bookRepo = getRepository(Book)
+            const book = await bookRepo.findOne({where: {id: bookId}})
+            userPlan.bookName = book.name
+            userPlan.bookWordCount = book.word_count
+            userPlan.dailyWord = dailWord
+            // learnedCountBeforToday remainDays todayWords
+            userPlan.remainDays = Math.ceil(book.word_count / dailWord)
+            const todayTime = new Date(new Date().setHours(0, 0, 0, 0))
+            const maxWordId = await getConnection().query(`SELECT MAX(wordId) FROM learn WHERE userId = ? AND bookId = ? AND createDate < ?`,[user.id, bookId, todayTime])
+            const todayWords = await getRepository(Word).find({where: {id: MoreThan(maxWordId)}, take: dailWord, order: {id: "ASC"}})
+            const learnedCountBeforToday = await getConnection().query(`SELECT COUNT(1) FROM learn WHERE userId = ? AND bookId = ? AND createDate < ?`,[user.id, bookId, todayTime])
+            userPlan.todayWords = todayWords
+            userPlan.learnedCountBeforToday = learnedCountBeforToday
+            return userPlan
+        },
+        addLearn: async(parent, {bookId, wordId}, {user}: {user: User}, info) => {
+            const learnRepo = getRepository(Learn)
+            const learn = new Learn()
+            learn.userId = user.id
+            learn.bookId = bookId
+            learn.wordId = wordId
+            learn.createDate = Date.now()
+            await learnRepo.save(learn)
+            return "success"
         }
     },
     Book: {
