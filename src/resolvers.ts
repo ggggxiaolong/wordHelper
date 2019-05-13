@@ -5,12 +5,13 @@ import { Word } from "./entity/Word";
 import { User } from "./entity/User";
 import * as jwt from "jsonwebtoken"
 import * as bcrypt from 'bcryptjs'
-import { AuthenticationError } from "apollo-server";
+import { AuthenticationError, PubSub, withFilter } from "apollo-server";
 import { Token } from "./entity/Token";
 import { JWTData } from "./entity/JWTData";
 import { Plan } from "./entity/Plan";
 import { UserPlan } from "./entity/UserPlan";
 import { Learn } from "./entity/Learn";
+import { pubsub, CHANNEL_TODAY_WORDS } from "./Pubsub";
 
 export const resolver = {
     Query: {
@@ -97,7 +98,17 @@ export const resolver = {
             learn.wordId = wordId
             learn.createDate = Date.now()
             await learnRepo.save(learn)
+            const todayTime = new Date(new Date().setHours(0, 0, 0, 0))
+            const todayWords = getConnection().query("SELECT word.* from plan join word on word.id = plan.wordId where plan.userId = ? and plan.bookId = ? and createDate > ?",[user.id, bookId, todayTime])
+            pubsub.publish(CHANNEL_TODAY_WORDS, todayWords)
             return "success"
+        }
+    },
+    Subscription:{
+        todayLeanedWords: {
+            subscribe: withFilter(() => pubsub.asyncIterator(CHANNEL_TODAY_WORDS), (payload, variables) => {
+                return payload.CHANNEL_TODAY_WORDS.id === variables.relevantId
+            }),
         }
     },
     Book: {

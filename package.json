@@ -8,15 +8,18 @@
       "@types/node": "^8.0.29"
    },
    "dependencies": {
+      "PubSub": "^3.6.0",
       "apollo-server": "^2.4.8",
       "bcryptjs": "^2.4.3",
-      "graphql": "^14.2.1",
+      "graphql": "^14.3.0",
       "graphql-depth-limit": "^1.1.0",
+      "graphql-subscriptions": "^1.1.0",
       "jsonwebtoken": "^8.5.1",
       "nodemon": "^1.18.11",
       "pubsub-js": "^1.7.0",
       "reflect-metadata": "^0.1.10",
       "sqlite3": "^4.0.3",
+      "subscriptions-transport-ws": "^0.9.16",
       "ts-node": "3.3.0",
       "typeorm": "0.2.16",
       "typescript": "2.5.2"
