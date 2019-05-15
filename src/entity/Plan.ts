@@ -13,4 +13,7 @@ export class Plan{
 
     @Column({name:"dailyWords"})
     dailyWord: number
+
+    @Column({name:"createDate"})
+    createDate: number
 }

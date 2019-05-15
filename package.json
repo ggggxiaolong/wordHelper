@@ -9,7 +9,7 @@
    },
    "dependencies": {
       "PubSub": "^3.6.0",
-      "apollo-server": "^2.4.8",
+      "apollo-server-express": "^2.5.0",
       "bcryptjs": "^2.4.3",
       "graphql": "^14.3.0",
       "graphql-depth-limit": "^1.1.0",
@@ -18,7 +18,7 @@
       "nodemon": "^1.18.11",
       "pubsub-js": "^1.7.0",
       "reflect-metadata": "^0.1.10",
-      "sqlite3": "^4.0.3",
+      "sqlite3": "^4.0.8",
       "subscriptions-transport-ws": "^0.9.16",
       "ts-node": "3.3.0",
       "typeorm": "0.2.16",

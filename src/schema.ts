@@ -6,7 +6,7 @@ type Book {
     id: ID!
     name: String
     image: String
-    wordCounr: Int
+    wordCount: Int
     shortDesc: String
     desc: String
     chapters: [Chapter!]
@@ -70,6 +70,6 @@ type Mutation {
 }
 
 type Subscription {
-    todayLeanedWords(userId: ID): [Word]!
+    todayLeanedWords(userId: ID): [Word]! @auth
 }
 `

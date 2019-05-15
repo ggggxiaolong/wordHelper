@@ -65,27 +65,31 @@ export const resolver = {
         }
     },
     Mutation: {
-        addPlan: async(parent , {bookId, dailWord}, {user}:{ user: User}, info) => {
+        addPlan: async(parent , {bookId, dailyWord}, {user}:{ user: User}, info) => {
             const planRepo = getRepository(Plan)
             const plan = new Plan()
             plan.bookId = bookId
-            plan.dailyWord = dailWord
+            plan.dailyWord = dailyWord
             plan.userId = user.id
             plan.wordId = 0
+            plan.createDate = Date.now()
             await planRepo.save(plan)
             const userPlan = new UserPlan()
             userPlan.bookId = bookId
             const bookRepo = getRepository(Book)
             const book = await bookRepo.findOne({where: {id: bookId}})
             userPlan.bookName = book.name
-            userPlan.bookWordCount = book.word_count
-            userPlan.dailyWord = dailWord
+            userPlan.bookWordCount = book.wordCount
+            userPlan.dailyWord = dailyWord
             // learnedCountBeforToday remainDays todayWords
-            userPlan.remainDays = Math.ceil(book.word_count / dailWord)
-            const todayTime = new Date(new Date().setHours(0, 0, 0, 0))
+            userPlan.remainDays = Math.ceil(book.wordCount / dailyWord)
+            const todayTime = new Date(new Date().setHours(0, 0, 0, 0)).getTime()
             const maxWordId = await getConnection().query(`SELECT MAX(wordId) FROM learn WHERE userId = ? AND bookId = ? AND createDate < ?`,[user.id, bookId, todayTime])
-            const todayWords = await getRepository(Word).find({where: {id: MoreThan(maxWordId)}, take: dailWord, order: {id: "ASC"}})
-            const learnedCountBeforToday = await getConnection().query(`SELECT COUNT(1) FROM learn WHERE userId = ? AND bookId = ? AND createDate < ?`,[user.id, bookId, todayTime])
+            const todayWords = await getRepository(Word).find({where: {id: MoreThan(maxWordId)}, take: dailyWord, order: {id: "ASC"}})
+            // const learnedCountBeforToday = await getConnection().query(`SELECT COUNT(1) FROM learn WHERE userId = ? AND bookId = ? AND createDate < ?`,[user.id, bookId, todayTime])
+            const {learnedCountBeforToday} = await getRepository(Learn).createQueryBuilder("learn")
+                .select("COUNT(1)", "learnedCountBeforToday").where("learn.userId = :userId AND learn.bookId = :bookId AND learn.createDate < :createDate",
+                {userId: user.id, bookId: bookId, createDate:todayTime}).getRawOne()
             userPlan.todayWords = todayWords
             userPlan.learnedCountBeforToday = learnedCountBeforToday
             return userPlan
@@ -107,7 +111,8 @@ export const resolver = {
     Subscription:{
         todayLeanedWords: {
             subscribe: withFilter(() => pubsub.asyncIterator(CHANNEL_TODAY_WORDS), (payload, variables) => {
-                return payload.CHANNEL_TODAY_WORDS.id === variables.relevantId
+                console.log(payload)
+                return payload.userId === variables.userId
             }),
         }
     },

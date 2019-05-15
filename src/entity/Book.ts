@@ -12,11 +12,11 @@ export class Book{
     @Column()
     image: String
     
-    @Column()
-    word_count: number
+    @Column({name:"word_count"})
+    wordCount: number
 
-    @Column()
-    short_desc: String
+    @Column({name:"short_desc"})
+    shortDesc: String
 
     @Column()
     desc: String
