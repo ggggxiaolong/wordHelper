@@ -11,8 +11,9 @@ import { JWTData } from "./entity/JWTData";
 import { Plan } from "./entity/Plan";
 import { UserPlan } from "./entity/UserPlan";
 import { Learn } from "./entity/Learn";
-import { pubsub, CHANNEL_TODAY_WORDS } from "./Pubsub";
+import { CHANNEL_TODAY_WORDS } from "./Pubsub";
 
+const pubsub = new PubSub()
 export const resolver = {
     Query: {
         books: async (_, { pageSize = 20, page = 0 }, ___) => {
@@ -103,17 +104,21 @@ export const resolver = {
             learn.createDate = Date.now()
             await learnRepo.save(learn)
             const todayTime = new Date(new Date().setHours(0, 0, 0, 0))
-            const todayWords = getConnection().query("SELECT word.* from plan join word on word.id = plan.wordId where plan.userId = ? and plan.bookId = ? and createDate > ?",[user.id, bookId, todayTime])
-            pubsub.publish(CHANNEL_TODAY_WORDS, todayWords)
+            const todayWords = await getConnection().query("SELECT word.* from learn join word on word.id = learn.wordId where learn.userId = ? and learn.bookId = ? and createDate > ?",[user.id, bookId, todayTime])
+            console.log(todayWords)
+            await pubsub.publish(CHANNEL_TODAY_WORDS, todayWords)
             return "success"
         }
     },
     Subscription:{
+        // todayLeanedWords: {
+        //     subscribe: withFilter(() => pubsub.asyncIterator(CHANNEL_TODAY_WORDS), (payload, variables) => {
+        //         console.log(payload)
+        //         return payload.todayLeanedWords.userId === variables.userId
+        //     }),
+        // }
         todayLeanedWords: {
-            subscribe: withFilter(() => pubsub.asyncIterator(CHANNEL_TODAY_WORDS), (payload, variables) => {
-                console.log(payload)
-                return payload.userId === variables.userId
-            }),
+            subscribe: () => pubsub.asyncIterator([CHANNEL_TODAY_WORDS])
         }
     },
     Book: {
