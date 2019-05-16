@@ -106,19 +106,16 @@ export const resolver = {
             const todayTime = new Date(new Date().setHours(0, 0, 0, 0))
             const todayWords = await getConnection().query("SELECT word.* from learn join word on word.id = learn.wordId where learn.userId = ? and learn.bookId = ? and createDate > ?",[user.id, bookId, todayTime])
             console.log(todayWords)
-            await pubsub.publish(CHANNEL_TODAY_WORDS, todayWords)
+            await pubsub.publish(CHANNEL_TODAY_WORDS, {todayLeanedWords:todayWords, userId: user.id})
             return "success"
         }
     },
     Subscription:{
-        // todayLeanedWords: {
-        //     subscribe: withFilter(() => pubsub.asyncIterator(CHANNEL_TODAY_WORDS), (payload, variables) => {
-        //         console.log(payload)
-        //         return payload.todayLeanedWords.userId === variables.userId
-        //     }),
-        // }
         todayLeanedWords: {
-            subscribe: () => pubsub.asyncIterator([CHANNEL_TODAY_WORDS])
+            subscribe: withFilter(() => pubsub.asyncIterator(CHANNEL_TODAY_WORDS), (payload, variables) => {
+                console.log(payload)
+                return payload.userId === variables.userId
+            }),
         }
     },
     Book: {

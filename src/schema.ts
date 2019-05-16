@@ -70,6 +70,6 @@ type Mutation {
 }
 
 type Subscription {
-    todayLeanedWords: [Word]!
+    todayLeanedWords(userId: Int!): [Word]!
 }
 `
