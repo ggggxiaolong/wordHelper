@@ -9,7 +9,7 @@
    },
    "dependencies": {
       "PubSub": "^3.6.0",
-      "apollo-server-express": "^2.5.0",
+      "apollo-server-express": "^2.14.2",
       "bcryptjs": "^2.4.3",
       "graphql": "^14.3.0",
       "graphql-depth-limit": "^1.1.0",
