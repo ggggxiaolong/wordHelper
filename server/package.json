@@ -21,7 +21,7 @@
       "sqlite3": "^4.0.8",
       "subscriptions-transport-ws": "^0.9.16",
       "ts-node": "3.3.0",
-      "typeorm": "0.2.16",
+      "typeorm": "0.2.25",
       "typescript": "2.5.2"
    },
    "scripts": {
